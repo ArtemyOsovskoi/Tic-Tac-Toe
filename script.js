@@ -1,33 +1,66 @@
-const gameBoard = function (){
-    //empty gameboard array for storing player choice
-    const boardArray = ["", "", "", "", "", "", "", "", ""]; 
-};
-
-//factory function to create players with name and marker
-const players = (name, marker) => {
-    return {name, marker}
-}
-
-/* IIFE to store all related to game flow */
-const gameFlow = (() => {
-    //players stored in objects made from factory
-    const player1 = players("John", "X");
-    const player2 = players("Alex", "O");
-
-    let currentPlayer = player1;
-
-    function playerSwitcher() {
-        if (currentPlayer == player1) {
-            currentPlayer = player2;
-        }
-        else currentPlayer = player1;
-    }
+//IIFE storing gameboard array
+const gameBoard = (() => {
+  //empty gameboard array for storing player marks
+  let boardArray = ["", "", "", "", "", "", "", "", ""];
+  return { boardArray };
 })();
 
+//IIFE for storing all things related to the game flow
+const gameFlow = (() => {
+  //private factory to create players with name and mark
+  const playersFactory = (name, mark) => {
+    return { name, mark };
+  };
+  //players stored in objects made from factory
+  const playerX = playersFactory("PlayerX", "X");
+  const playerO = playersFactory("PlayerO", "O");
+  let currentPlayer = playerX;
 
+  return { currentPlayer, playerX, playerO };
+})();
 
+//play one round (same as user clicking on DOM element, but for console version)
+const playRound = () => {
+  if (gameFlow.currentPlayer.mark == "X") {
+    gameBoard.boardArray[0] = "X";
+  } else gameBoard.boardArray[0] = "O";
 
+  function playerSwitcher() {
+    if (gameFlow.currentPlayer == gameFlow.playerX) {
+      gameFlow.currentPlayer = gameFlow.playerO;
+    } else gameFlow.currentPlayer = gameFlow.playerX;
+  }
 
+  playerSwitcher();
+  console.log(gameFlow.currentPlayer), console.log(gameBoard.boardArray);
+};
+
+/* псевдокод 08\02 (игра в консоли)
+нажимаем наш "клик" - запускаем функцию playRound()
+
+*/
+
+/* 07.02 дело сдвинулось с мертвой точки! Нужно изучить scope и понять как получать доступ к
+элементам из IIFE, чтобы доделать рабочую версию игры в консоли - завтра спросить в дискорде если что */
+/* 08.02 поменял место playerSwitch в playRound и теперь работает смена игроков после 1 хода */
+
+/* NOTES: 
+- Returning from IIFE makes returned things visible in outer scope
+- Accessing a module is actually accessing whatever it returns.
+- Чтобы получить доступ к элементу из IIFE нужно не просто return его, но
+и добавить название функции с точкой ПЕРЕД ним 
+(например не просто playerSwitcher() а gameFlow.playerSwitcher())
+*/
+
+/* Алгоритм:
+Клик на пустую клетку -> изменение содержимого кликаемой клетки на Х -> следующий клик будет 0 
+-> изменение содержимого кликаемой клетки на 0 -> и т.д. пока 3 клетки в ряд не будут все Х или все 0 
+-> нажать кнопку рестарт -> очистить все клетки от содержимого и по новой. 
+
+1) клик на пустую клетку - кто кликает, какой символ
+2) изменение содержимого кликаемой клетки на X - при условии клика поменять содержимое
+3) следующий клик будет О - менять следующий клик
+*/
 
 /* GAME FLOW LOGIC -> the user dictates the play of the game
 when they click, thats when we use our functions to do everything that needs to happen in that "round", 
@@ -44,27 +77,12 @@ then either someone won or...
 you switch players
 and youre back at step 1 */
 
-
 /* 
 - Пытаемся убрать как можно больше в фабричные функции
 - Если нужен один экземпляр - то оборачиваем фабрику в IIFE чтобы не создавать доп. экземпляров
 - Старайся расположить все логично, все части функционала в своих объектах
 - Логика победы: проверка выйгрышных 3на3 и ничьих
 - Забудь про html и css пока игра не работает в консоли!
-
-1. Храним игровую доску как массив в объекте Gameboard
-1.1. Храним игроков в объектах
-1.2. Объект для управления ходом игры  
-*/
-
-/* Алгоритм:
-Клик на пустую клетку -> изменение содержимого кликаемой клетки на Х -> следующий клик будет 0 
--> изменение содержимого кликаемой клетки на 0 -> и т.д. пока 3 клетки в ряд не будут все Х или все 0 
--> нажать кнопку рестарт -> очистить все клетки от содержимого и по новой. 
-
-1) клик на пустую клетку - кто кликает, какой символ
-2) изменение содержимого кликаемой клетки на X - при условии клика поменять содержимое
-3) следующий клик будет О - менять следующий клик
 */
 
 /* the rule is, if the variable is being assigned something 
@@ -101,7 +119,4 @@ check if theres a winning play by
 matching 3 spots wiht the current player mark for each possible win
 if its a match, someone won
 otherwise switch players
-now i left out a couple details, beccause there will be things you'll have to figure out 
-and solve and it will become more obvious as you get all the base game working and it meets the real world.
-but thats the basic idea
  */
