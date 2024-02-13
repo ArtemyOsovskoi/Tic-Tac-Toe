@@ -1,7 +1,8 @@
 //IIFE storing gameboard array
 const gameBoard = (() => {
-  //empty gameboard array for storing player marks
+  //empty array for storing player marks
   let boardArray = ["", "", "", "", "", "", "", "", ""];
+
   return { boardArray };
 })();
 
@@ -14,26 +15,109 @@ const gameFlow = (() => {
   //players stored in objects made from factory
   const playerX = playersFactory("PlayerX", "X");
   const playerO = playersFactory("PlayerO", "O");
+  //start from player with mark X
   let currentPlayer = playerX;
 
   return { currentPlayer, playerX, playerO };
 })();
 
 //play one round (same as user clicking on DOM element, but for console version)
-const playRound = () => {
-  if (gameFlow.currentPlayer.mark == "X") {
-    gameBoard.boardArray[0] = "X";
-  } else gameBoard.boardArray[0] = "O";
-
+const playRound = (index) => {
   function playerSwitcher() {
     if (gameFlow.currentPlayer == gameFlow.playerX) {
       gameFlow.currentPlayer = gameFlow.playerO;
     } else gameFlow.currentPlayer = gameFlow.playerX;
   }
+  /* 1 2 3
+   4 5 6
+   7 8 9 */
+  const winConditionOne = gameBoard.boardArray[(1, 2, 3)];
+  const winConditionTwo = gameBoard.boardArray[(4, 5, 6)];
+  const winConditionThree = gameBoard.boardArray[(7, 8, 9)];
+  const winConditionFour = gameBoard.boardArray[(1, 5, 9)];
+  const winConditionFive = gameBoard.boardArray[(3, 5, 7)];
+  const winConditionSix = gameBoard.boardArray[(1, 4, 7)];
+  const winConditionSeven = gameBoard.boardArray[(2, 5, 8)];
+  const winConditionEight = gameBoard.boardArray[(3, 6, 9)];
 
+  let winConditionsList = [
+    winConditionOne,
+    winConditionTwo,
+    winConditionThree,
+    winConditionFour,
+    winConditionFive,
+    winConditionSix,
+    winConditionSeven,
+    winConditionEight,
+  ];
+
+  if (gameFlow.currentPlayer.mark == "X") {
+    gameBoard.boardArray[index - 1] = "X";
+  } else gameBoard.boardArray[index - 1] = "O";
+
+  /* if (
+    
+  ) {
+    console.log("it works!");
+  } */
+
+  /* 13.02 нужно проверить указанные в wincondition индексы массива
+на соответствие их величине Х или О, и если это true
+завершить игру победой 
+
+Завтра работаем с массивами и их методами, ответ где то там) 
+
+*/
+
+  //log game flow in console and switch players
+  console.log(
+    gameFlow.currentPlayer.name,
+    "moves",
+    gameFlow.currentPlayer.mark,
+    "to position",
+    index
+  );
+  console.log(gameBoard.boardArray);
   playerSwitcher();
-  console.log(gameFlow.currentPlayer), console.log(gameBoard.boardArray);
+  console.log(
+    gameFlow.currentPlayer.name,
+    "moves",
+    gameFlow.currentPlayer.mark,
+    "next"
+  );
 };
+
+
+
+
+
+
+
+
+
+/* 09/02 сегодня получилось сделать рабочую смену игроков в консоли, теперь
+можно делать ход playRound() и каждый игрок ходит с Х и О. 
+
+Проблема в том, что они ходят по одному разу
+и задача далее понять как сделать win condition и 
+вставлять в массив больше символов, чем один (всего 9 максимум) 
+*/
+/* по сути (индексы) let boardArray = [1, 2, 3, 4...9];
+  aka:
+  1 2 3
+  4 5 6
+  7 8 9 
+т.е. нужно связать клик на квадарат DOM с индексом в массиве выше
+и когда кликает на него, мы добавляем currentPlayer.mark в нужное место массива 
+
+winConditions будут 3 индекса подряд с одинаковой playerMark
+например если 1 5 9 == Х (каждый индекс равен Х) то игрокХ = победитель
+*/
+
+/* 13.02 как САМОМУ выбирать позицию массива куда вставить марку и уже выбирать победителя?
+сейчас просто идут по очереди Х О Х О и тд 
+нужно как то передать аргумент функции playRound когда мы ее вызываем
+и в этом аргументе будет индекс позиция массива КУДА мы хотим поставить currentPlayer.mark*/
 
 /* псевдокод 08\02 (игра в консоли)
 нажимаем наш "клик" - запускаем функцию playRound()
