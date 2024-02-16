@@ -32,21 +32,38 @@ function threeOCheck(array) {
     });
 };
 
+//auto switch players after each move
 function playerSwitcher() {
     if (gameFlow.currentPlayer == gameFlow.playerX) {
       gameFlow.currentPlayer = gameFlow.playerO;
     } else gameFlow.currentPlayer = gameFlow.playerX;
   }
 
+//console message before game starts
+console.log("Current player:", currentPlayer.name, "with mark", currentPlayer.mark);
+console.log("Make move by typing makeMove(1-9). First player moves X.");
+console.log("First to put three X or O in a row wins!");
+
   return { currentPlayer, playerX, playerO, threeXCheck, threeOCheck, playerSwitcher };
 })();
 
-//make one move with X or O and choose position
+//make one move with X or O and choose position (for console)
 const makeMove = (index) => {
   //current mark to move 
-  if (gameFlow.currentPlayer.mark == "X") {
+  if (gameFlow.currentPlayer.mark == "X" && gameBoard.boardArray[index - 1] != "O") {
     gameBoard.boardArray[index - 1] = "X";
-  } else gameBoard.boardArray[index - 1] = "O";
+  } else if (gameFlow.currentPlayer.mark == "O" && gameBoard.boardArray[index - 1] != "X") {
+    gameBoard.boardArray[index - 1] = "O";
+  };
+
+  //if position already marked with X or O (prevent rewriting finished moves)
+  if (gameBoard.boardArray[index - 1] == "X" && gameFlow.currentPlayer.mark == "O") {
+    console.log("%cThis position is already taken!",'color: red');
+    gameFlow.playerSwitcher();
+    } else if (gameBoard.boardArray[index - 1] == "O" && gameFlow.currentPlayer.mark == "X") {
+    console.log("%cThis position is already taken!",'color: red');
+    gameFlow.playerSwitcher();
+    };
 
   //check if there's three same marks in a row
   const checkIfThreeX = gameFlow.threeXCheck(gameBoard.boardArray);
@@ -73,10 +90,16 @@ const makeMove = (index) => {
   if (checkIfThreeX === true) {
     console.log("XXX won!");
     gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
+    if (gameFlow.currentPlayer == gameFlow.playerO) {
+        gameFlow.playerSwitcher();
+    }
   };
   if (checkIfThreeO === true) {
     console.log("OOO won!");
     gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
+    if (gameFlow.currentPlayer == gameFlow.playerO) {
+        gameFlow.playerSwitcher();
+    }
   };
 };
 
