@@ -18,56 +18,39 @@ const gameFlow = (() => {
   //start from player with mark X
   let currentPlayer = playerX;
 
-  return { currentPlayer, playerX, playerO };
-})();
+  //win condition logic - three marks in a row
+function threeXCheck(array) {
+    return array.some(function (element, index, array) {
+        return index > 1 && element === array[index - 2] 
+            && element === array[index - 1] && element === "X";
+    });
+};
+function threeOCheck(array) {
+    return array.some(function (element, index, array) {
+        return index > 1 && element === array[index - 2] 
+            && element === array[index - 1] && element === "O";
+    });
+};
 
-//play one round (same as user clicking on DOM element, but for console version)
-const playRound = (index) => {
-  function playerSwitcher() {
+function playerSwitcher() {
     if (gameFlow.currentPlayer == gameFlow.playerX) {
       gameFlow.currentPlayer = gameFlow.playerO;
     } else gameFlow.currentPlayer = gameFlow.playerX;
   }
-  /* 1 2 3
-   4 5 6
-   7 8 9 */
-  const winConditionOne = gameBoard.boardArray[(1, 2, 3)];
-  const winConditionTwo = gameBoard.boardArray[(4, 5, 6)];
-  const winConditionThree = gameBoard.boardArray[(7, 8, 9)];
-  const winConditionFour = gameBoard.boardArray[(1, 5, 9)];
-  const winConditionFive = gameBoard.boardArray[(3, 5, 7)];
-  const winConditionSix = gameBoard.boardArray[(1, 4, 7)];
-  const winConditionSeven = gameBoard.boardArray[(2, 5, 8)];
-  const winConditionEight = gameBoard.boardArray[(3, 6, 9)];
 
-  let winConditionsList = [
-    winConditionOne,
-    winConditionTwo,
-    winConditionThree,
-    winConditionFour,
-    winConditionFive,
-    winConditionSix,
-    winConditionSeven,
-    winConditionEight,
-  ];
+  return { currentPlayer, playerX, playerO, threeXCheck, threeOCheck, playerSwitcher };
+})();
 
+//make one move with X or O and choose position
+const makeMove = (index) => {
+  //current mark to move 
   if (gameFlow.currentPlayer.mark == "X") {
     gameBoard.boardArray[index - 1] = "X";
   } else gameBoard.boardArray[index - 1] = "O";
 
-  /* if (
-    
-  ) {
-    console.log("it works!");
-  } */
-
-  /* 13.02 нужно проверить указанные в wincondition индексы массива
-на соответствие их величине Х или О, и если это true
-завершить игру победой 
-
-Завтра работаем с массивами и их методами, ответ где то там) 
-
-*/
+  //check if there's three same marks in a row
+  const checkIfThreeX = gameFlow.threeXCheck(gameBoard.boardArray);
+  const checkIfThreeO = gameFlow.threeOCheck(gameBoard.boardArray);
 
   //log game flow in console and switch players
   console.log(
@@ -78,13 +61,23 @@ const playRound = (index) => {
     index
   );
   console.log(gameBoard.boardArray);
-  playerSwitcher();
+  gameFlow.playerSwitcher();
   console.log(
     gameFlow.currentPlayer.name,
     "moves",
     gameFlow.currentPlayer.mark,
     "next"
   );
+
+  //win condition, game ends, clear array to play again
+  if (checkIfThreeX === true) {
+    console.log("XXX won!");
+    gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
+  };
+  if (checkIfThreeO === true) {
+    console.log("OOO won!");
+    gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
+  };
 };
 
 
@@ -95,8 +88,49 @@ const playRound = (index) => {
 
 
 
+  /* 0 1 2
+     3 4 5
+     6 7 8 */
+/*   const winConditionOne = gameBoard.boardArray[1, 2, 3];
+  const winConditionTwo = gameBoard.boardArray[4, 5, 6];
+  const winConditionThree = gameBoard.boardArray[7, 8, 9];
+  const winConditionFour = gameBoard.boardArray[1, 5, 9];
+  const winConditionFive = gameBoard.boardArray[3, 5, 7];
+  const winConditionSix = gameBoard.boardArray[1, 4, 7];
+  const winConditionSeven = gameBoard.boardArray[2, 5, 8];
+  const winConditionEight = gameBoard.boardArray[3, 6, 9]; */
+    //for 3x3 gameboard:
+/*   let winConditionsList = [
+    gameBoard.boardArray[0, 1, 2],
+    gameBoard.boardArray[3, 4, 5],
+    gameBoard.boardArray[6, 7, 8],
+    gameBoard.boardArray[0, 4, 8],
+    gameBoard.boardArray[2, 4, 6],
+    gameBoard.boardArray[0, 3, 6],
+    gameBoard.boardArray[1, 4, 7],
+    gameBoard.boardArray[2, 5, 8],
+  ];  */
+  //for 1-9 line in console
+/* indexes: 0 1 2 3 4 5 6 7 8 */
+
+/* 16.02: и так, у меня есть массив состоящий из простых строк Х и О. Каждая строка - элемент массива,
+имеет индекс. Мне нужно определить когда ТРИ индекса, идущие друг за другом (123, 234, 345 и тд) 
+имеют ОДНО значение ХХХ или ООО - это и будет условием победы*/
+
+
+/* 15.02 что то двинулось с array.every() но пока не до конца идеально,
+т.к. проверяет только после победного условия (то есть уже есть три подряд но выдает консоль лог после
+четвертого хода) и в целом не ясно рабочий ли вариант, нужно писать в дискорд и уточнить */
+
+  /* 13.02 нужно проверить указанные в wincondition индексы массива
+на соответствие их величине Х или О, и если это true
+завершить игру победой 
+
+Завтра работаем с массивами и их методами, ответ где то там) 
+*/
+
 /* 09/02 сегодня получилось сделать рабочую смену игроков в консоли, теперь
-можно делать ход playRound() и каждый игрок ходит с Х и О. 
+можно делать ход makeMove() и каждый игрок ходит с Х и О. 
 
 Проблема в том, что они ходят по одному разу
 и задача далее понять как сделать win condition и 
@@ -116,17 +150,17 @@ winConditions будут 3 индекса подряд с одинаковой p
 
 /* 13.02 как САМОМУ выбирать позицию массива куда вставить марку и уже выбирать победителя?
 сейчас просто идут по очереди Х О Х О и тд 
-нужно как то передать аргумент функции playRound когда мы ее вызываем
+нужно как то передать аргумент функции makeMove когда мы ее вызываем
 и в этом аргументе будет индекс позиция массива КУДА мы хотим поставить currentPlayer.mark*/
 
 /* псевдокод 08\02 (игра в консоли)
-нажимаем наш "клик" - запускаем функцию playRound()
+нажимаем наш "клик" - запускаем функцию makeMove()
 
 */
 
 /* 07.02 дело сдвинулось с мертвой точки! Нужно изучить scope и понять как получать доступ к
 элементам из IIFE, чтобы доделать рабочую версию игры в консоли - завтра спросить в дискорде если что */
-/* 08.02 поменял место playerSwitch в playRound и теперь работает смена игроков после 1 хода */
+/* 08.02 поменял место playerSwitch в makeMove и теперь работает смена игроков после 1 хода */
 
 /* NOTES: 
 - Returning from IIFE makes returned things visible in outer scope
