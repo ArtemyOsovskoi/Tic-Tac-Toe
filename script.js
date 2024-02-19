@@ -18,52 +18,97 @@ const gameFlow = (() => {
   //start from player with mark X
   let currentPlayer = playerX;
 
-  //win condition logic - three marks in a row
-function threeXCheck(array) {
+  //win condition logic - three marks in a row (X or O)
+  function threeXCheck(array) {
     return array.some(function (element, index, array) {
-        return index > 1 && element === array[index - 2] 
-            && element === array[index - 1] && element === "X";
+      return (
+        index > 1 &&
+        element === array[index - 2] &&
+        element === array[index - 1] &&
+        element === "X"
+      );
     });
-};
-function threeOCheck(array) {
+  }
+  function threeOCheck(array) {
     return array.some(function (element, index, array) {
-        return index > 1 && element === array[index - 2] 
-            && element === array[index - 1] && element === "O";
+      return (
+        index > 1 &&
+        element === array[index - 2] &&
+        element === array[index - 1] &&
+        element === "O"
+      );
     });
-};
+  }
 
-//auto switch players after each move
-function playerSwitcher() {
+  //auto switch players after each move
+  function playerSwitcher() {
     if (gameFlow.currentPlayer == gameFlow.playerX) {
       gameFlow.currentPlayer = gameFlow.playerO;
     } else gameFlow.currentPlayer = gameFlow.playerX;
-  }
-
-//console message before game starts
-console.log("Current player:", currentPlayer.name, "with mark", currentPlayer.mark);
-console.log("Make move by typing makeMove(1-9). First player moves X.");
-console.log("First to put three X or O in a row wins!");
-
-  return { currentPlayer, playerX, playerO, threeXCheck, threeOCheck, playerSwitcher };
-})();
-
-//make one move with X or O and choose position (for console)
-const makeMove = (index) => {
-  //current mark to move 
-  if (gameFlow.currentPlayer.mark == "X" && gameBoard.boardArray[index - 1] != "O") {
-    gameBoard.boardArray[index - 1] = "X";
-  } else if (gameFlow.currentPlayer.mark == "O" && gameBoard.boardArray[index - 1] != "X") {
-    gameBoard.boardArray[index - 1] = "O";
   };
 
+  //console message before game starts
+  console.log(
+    "Current player:",
+    currentPlayer.name,
+    "with mark",
+    currentPlayer.mark
+  );
+  console.log("Make move by typing makeMove(1-9). First player moves X.");
+  console.log("First to put three X or O in a row wins!");
+
+  return {
+    currentPlayer,
+    playerX,
+    playerO,
+    threeXCheck,
+    threeOCheck,
+    playerSwitcher,
+  };
+})();
+
+//click on the square and get X or O based on current player
+const playRound = () => {
+    let square = document.querySelectorAll('.gameboardCell');
+    Array.from(square).forEach((boardSquare) => {
+        boardSquare.addEventListener('click', () => {
+            boardSquare.innerHTML = gameFlow.currentPlayer.mark;
+
+    
+        });
+    });
+
+};
+playRound();
+
+/* const makeMove = (index) => {
+  //current mark to move
+  if (
+    gameFlow.currentPlayer.mark == "X" &&
+    gameBoard.boardArray[index - 1] != "O"
+  ) {
+    gameBoard.boardArray[index - 1] = "X";
+  } else if (
+    gameFlow.currentPlayer.mark == "O" &&
+    gameBoard.boardArray[index - 1] != "X"
+  ) {
+    gameBoard.boardArray[index - 1] = "O";
+  }
+
   //if position already marked with X or O (prevent rewriting finished moves)
-  if (gameBoard.boardArray[index - 1] == "X" && gameFlow.currentPlayer.mark == "O") {
-    console.log("%cThis position is already taken!",'color: red');
+  if (
+    gameBoard.boardArray[index - 1] == "X" &&
+    gameFlow.currentPlayer.mark == "O"
+  ) {
+    console.log("%cThis position is already taken!", "color: red");
     gameFlow.playerSwitcher();
-    } else if (gameBoard.boardArray[index - 1] == "O" && gameFlow.currentPlayer.mark == "X") {
-    console.log("%cThis position is already taken!",'color: red');
+  } else if (
+    gameBoard.boardArray[index - 1] == "O" &&
+    gameFlow.currentPlayer.mark == "X"
+  ) {
+    console.log("%cThis position is already taken!", "color: red");
     gameFlow.playerSwitcher();
-    };
+  }
 
   //check if there's three same marks in a row
   const checkIfThreeX = gameFlow.threeXCheck(gameBoard.boardArray);
@@ -91,27 +136,30 @@ const makeMove = (index) => {
     console.log("XXX won!");
     gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
     if (gameFlow.currentPlayer == gameFlow.playerO) {
-        gameFlow.playerSwitcher();
+      gameFlow.playerSwitcher();
     }
-  };
+  }
   if (checkIfThreeO === true) {
     console.log("OOO won!");
     gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
     if (gameFlow.currentPlayer == gameFlow.playerO) {
-        gameFlow.playerSwitcher();
+      gameFlow.playerSwitcher();
     }
-  };
-};
+  }
+}; */
 
 
+/* 16.02 закончил консоль версию, теперь дело за DOMом.
+Нужно взять действие клик на квадрат
+По клику изменить содержимое ДИВа на
+текущую марку игрока
+Занести эту марку в массив
+
+!!!Изменить условия победы
+!!Добавить кнопку РЕСТАРТ */
 
 
-
-
-
-
-
-  /* 0 1 2
+/* 0 1 2
      3 4 5
      6 7 8 */
 /*   const winConditionOne = gameBoard.boardArray[1, 2, 3];
@@ -122,7 +170,7 @@ const makeMove = (index) => {
   const winConditionSix = gameBoard.boardArray[1, 4, 7];
   const winConditionSeven = gameBoard.boardArray[2, 5, 8];
   const winConditionEight = gameBoard.boardArray[3, 6, 9]; */
-    //for 3x3 gameboard:
+//for 3x3 gameboard:
 /*   let winConditionsList = [
     gameBoard.boardArray[0, 1, 2],
     gameBoard.boardArray[3, 4, 5],
@@ -133,19 +181,18 @@ const makeMove = (index) => {
     gameBoard.boardArray[1, 4, 7],
     gameBoard.boardArray[2, 5, 8],
   ];  */
-  //for 1-9 line in console
+//for 1-9 line in console
 /* indexes: 0 1 2 3 4 5 6 7 8 */
 
 /* 16.02: и так, у меня есть массив состоящий из простых строк Х и О. Каждая строка - элемент массива,
 имеет индекс. Мне нужно определить когда ТРИ индекса, идущие друг за другом (123, 234, 345 и тд) 
 имеют ОДНО значение ХХХ или ООО - это и будет условием победы*/
 
-
 /* 15.02 что то двинулось с array.every() но пока не до конца идеально,
 т.к. проверяет только после победного условия (то есть уже есть три подряд но выдает консоль лог после
 четвертого хода) и в целом не ясно рабочий ли вариант, нужно писать в дискорд и уточнить */
 
-  /* 13.02 нужно проверить указанные в wincondition индексы массива
+/* 13.02 нужно проверить указанные в wincondition индексы массива
 на соответствие их величине Х или О, и если это true
 завершить игру победой 
 
@@ -202,62 +249,3 @@ winConditions будут 3 индекса подряд с одинаковой p
 2) изменение содержимого кликаемой клетки на X - при условии клика поменять содержимое
 3) следующий клик будет О - менять следующий клик
 */
-
-/* GAME FLOW LOGIC -> the user dictates the play of the game
-when they click, thats when we use our functions to do everything that needs to happen in that "round", 
-and then we can call up switchPlayer() to switch the player */
-
-/* BASIC IDEA: 
-when your current player clicks
-depending on where they click,
-you get the element so you can place currentPlayer.mark in that box
-you get the data Id of that location,
-You create a gamePiece object with a factory that stores the ID and the mark in your gameboard array
-Then you check your gameboard array to see if anybody won
-then either someone won or...
-you switch players
-and youre back at step 1 */
-
-/* 
-- Пытаемся убрать как можно больше в фабричные функции
-- Если нужен один экземпляр - то оборачиваем фабрику в IIFE чтобы не создавать доп. экземпляров
-- Старайся расположить все логично, все части функционала в своих объектах
-- Логика победы: проверка выйгрышных 3на3 и ничьих
-- Забудь про html и css пока игра не работает в консоли!
-*/
-
-/* the rule is, if the variable is being assigned something 
-that isn't going to change within that scope, 
-it should be const */
-
-/* pseudocode
-player clicks
-we check if the clicked element doesn't contain any text
-if it doesn't, get current player 
-add players mark to the square
-save the id of the square that was clicked
-take the id, and the current player, and put them in an object
-store the object in an array
-iterate over the array to get all the ids
-compare the ids in the array to the groups of ids that are a matching group
-if there is a matching group, check the associated players of each object
-if the value of current player is the same for all three objects,
-get the name and piece of that player object
-display them for the winner
-lock the game so that no more squares can be added marks to
-IF the ids dont match, or if they do but the values of the players are not the same
-switch players. 
-*/
-
-/* SIMPLER: */
-/* 
-player clicks
-if its empty (array)
-add current player mark to square
-using "value"  of the element from that click, 
-put the current player mark in the spot matching the "value"
-check if theres a winning play by
-matching 3 spots wiht the current player mark for each possible win
-if its a match, someone won
-otherwise switch players
- */
