@@ -11,13 +11,28 @@ body {
 }
 
 header {
-    height: 150px;
+    height: 100px;
     background-color: lightblue;
     text-align: center;
 }
 
 main {
     height: auto;
+}
+
+#logWrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#log {
+    border: 1px solid black;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 600px;
 }
 
 #wrapper {
@@ -41,6 +56,16 @@ main {
     font-size: 24px;
 }
 
+#buttonArea {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+button {
+    padding: 20px 60px 20px 60px;
+}
 
 footer {
     height: 100px;
