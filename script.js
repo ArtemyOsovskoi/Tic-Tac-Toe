@@ -18,28 +18,6 @@ const gameFlow = (() => {
   //start from player with mark X
   let currentPlayer = playerX;
 
-  //win condition logic - three marks in a row (X or O)
-  function threeXCheck(array) {
-    return array.some(function (element, index, array) {
-      return (
-        index > 1 &&
-        element === array[index - 2] &&
-        element === array[index - 1] &&
-        element === "X"
-      );
-    });
-  }
-  function threeOCheck(array) {
-    return array.some(function (element, index, array) {
-      return (
-        index > 1 &&
-        element === array[index - 2] &&
-        element === array[index - 1] &&
-        element === "O"
-      );
-    });
-  }
-
   //auto switch players after each move
   function playerSwitcher() {
     if (gameFlow.currentPlayer == gameFlow.playerX) {
@@ -54,32 +32,83 @@ const gameFlow = (() => {
     "with mark",
     currentPlayer.mark
   );
-  console.log("Make move by typing makeMove(1-9). First player moves X.");
-  console.log("First to put three X or O in a row wins!");
 
   return {
     currentPlayer,
     playerX,
     playerO,
-    threeXCheck,
-    threeOCheck,
     playerSwitcher,
   };
 })();
 
 //click on the square and get X or O based on current player
-const playRound = () => {
+const playRound = (() => {
     let square = document.querySelectorAll('.gameboardCell');
+    let restart = document.getElementById('restartButton');
+    //click square -> place mark -> add it to array
     Array.from(square).forEach((boardSquare) => {
         boardSquare.addEventListener('click', () => {
-            boardSquare.innerHTML = gameFlow.currentPlayer.mark;
-
-    
+            //prevent rewriting
+            if (boardSquare.innerHTML == "") {
+                boardSquare.innerHTML = gameFlow.currentPlayer.mark;
+                gameBoard.boardArray[boardSquare.id] = gameFlow.currentPlayer.mark;
+                gameFlow.playerSwitcher();
+                console.log( gameFlow.currentPlayer.name,"moves next with mark", gameFlow.currentPlayer.mark);
+                console.log(gameBoard.boardArray);                
+            };
+            //win condition, game ends, clear array to play again
+            if (    gameBoard.boardArray[0] == "X" && gameBoard.boardArray[1] == "X" && gameBoard.boardArray[2] == "X"||
+                    gameBoard.boardArray[3] == "X" && gameBoard.boardArray[4] == "X" && gameBoard.boardArray[5] == "X"||
+                    gameBoard.boardArray[6] == "X" && gameBoard.boardArray[7] == "X" && gameBoard.boardArray[8] == "X"||
+                    gameBoard.boardArray[0] == "X" && gameBoard.boardArray[4] == "X" && gameBoard.boardArray[8] == "X"||
+                    gameBoard.boardArray[2] == "X" && gameBoard.boardArray[4] == "X" && gameBoard.boardArray[6] == "X"||
+                    gameBoard.boardArray[0] == "X" && gameBoard.boardArray[3] == "X" && gameBoard.boardArray[6] == "X"||
+                    gameBoard.boardArray[1] == "X" && gameBoard.boardArray[4] == "X" && gameBoard.boardArray[7] == "X"||
+                    gameBoard.boardArray[2] == "X" && gameBoard.boardArray[5] == "X" && gameBoard.boardArray[8] == "X") {
+                    console.log("Player X won!");
+                    alert("Player X won!");
+                    gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
+                    
+                    if (gameFlow.currentPlayer == gameFlow.playerO) {
+                        gameFlow.playerSwitcher();
+                    } 
+            };
+            if (    gameBoard.boardArray[0] == "O" && gameBoard.boardArray[1] == "O" && gameBoard.boardArray[2] == "O"||
+                    gameBoard.boardArray[3] == "O" && gameBoard.boardArray[4] == "O" && gameBoard.boardArray[5] == "O"||
+                    gameBoard.boardArray[6] == "O" && gameBoard.boardArray[7] == "O" && gameBoard.boardArray[8] == "O"||
+                    gameBoard.boardArray[0] == "O" && gameBoard.boardArray[4] == "O" && gameBoard.boardArray[8] == "O"||
+                    gameBoard.boardArray[2] == "O" && gameBoard.boardArray[4] == "O" && gameBoard.boardArray[6] == "O"||
+                    gameBoard.boardArray[0] == "O" && gameBoard.boardArray[3] == "O" && gameBoard.boardArray[6] == "O"||
+                    gameBoard.boardArray[1] == "O" && gameBoard.boardArray[4] == "O" && gameBoard.boardArray[7] == "O"||
+                    gameBoard.boardArray[2] == "O" && gameBoard.boardArray[5] == "O" && gameBoard.boardArray[8] == "O") {
+                    console.log("Player O won!");
+                    alert("Player O won!");
+                    gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
+                    if (gameFlow.currentPlayer == gameFlow.playerO) {
+                        gameFlow.playerSwitcher();
+                    } 
+            };
         });
     });
 
-};
-playRound();
+    restart.addEventListener('click', ()=> {
+        gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
+        Array.from(square).forEach((boardSquare) => {boardSquare.innerHTML = ""});
+    });
+}) ();
+
+
+    /* INDEX = текущее место клика связанное с индексом массива
+    каждый из 9 индексов массива это один из квадратов на доске (массив стартует с 0):
+    0 1 2
+    3 4 5
+    6 7 8
+
+    у каждого квадрата соответствующий ID (0-8)
+    то есть индекс - это тот ID на который сделан клик
+    */
+
+
 
 /* const makeMove = (index) => {
   //current mark to move
@@ -238,14 +267,4 @@ winConditions будут 3 индекса подряд с одинаковой p
 - Чтобы получить доступ к элементу из IIFE нужно не просто return его, но
 и добавить название функции с точкой ПЕРЕД ним 
 (например не просто playerSwitcher() а gameFlow.playerSwitcher())
-*/
-
-/* Алгоритм:
-Клик на пустую клетку -> изменение содержимого кликаемой клетки на Х -> следующий клик будет 0 
--> изменение содержимого кликаемой клетки на 0 -> и т.д. пока 3 клетки в ряд не будут все Х или все 0 
--> нажать кнопку рестарт -> очистить все клетки от содержимого и по новой. 
-
-1) клик на пустую клетку - кто кликает, какой символ
-2) изменение содержимого кликаемой клетки на X - при условии клика поменять содержимое
-3) следующий клик будет О - менять следующий клик
 */
