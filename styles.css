@@ -11,7 +11,7 @@ body {
 
 header {
   height: 100px;
-  background-color: rgb(253, 232, 193);
+  background-color: #9BCDD2;
   text-align: center;
   font-size: 5em;
   font-family: "Cabin Sketch", sans-serif;
@@ -54,16 +54,16 @@ main {
 }
 
 .gameboardCell {
-  background-color: rgb(253, 232, 193);
+  background-color: #FAF0E4;
   border: 1px solid black;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 4em;
+  font-size: 5em;
   font-family: "Cabin Sketch", sans-serif;
   font-weight: 400;
   font-style: normal;
-  color: orangered;
+  color: #FF8551;
   cursor: pointer;
 }
 
@@ -87,12 +87,12 @@ button {
 }
 
 button:hover {
-  background-color: orange;
+  background-color: #FF8551;
 }
 
 footer {
   height: 100px;
-  background-color: rgb(252, 244, 230);
+  background-color: #9BCDD2;
   left: 0;
   bottom: 0;
   width: 100%;
@@ -112,7 +112,7 @@ footer a {
 }
 
 footer a:hover {
-  color: orange;
+  color: #FF8551;
 }
 
 .githubicon {
