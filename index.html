@@ -6,28 +6,53 @@
     <title>Tic Tac Toe</title>
     <script src="script.js" defer></script>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <header>TIC TAC TOE</header>
     <main>
-    <div id="logWrap">
-        <div id="log">message log</div>
-    </div>
-    <div id="wrapper">
-    <div id="gameboard">
-        <div class="gameboardCell" id="0"></div>
-        <div class="gameboardCell" id="1"></div>
-        <div class="gameboardCell" id="2"></div>
-        <div class="gameboardCell" id="3"></div>
-        <div class="gameboardCell" id="4"></div>
-        <div class="gameboardCell" id="5"></div>
-        <div class="gameboardCell" id="6"></div>
-        <div class="gameboardCell" id="7"></div>
-        <div class="gameboardCell" id="8"></div>
-    </div>
-    </div>
-    <div id="buttonArea"><button id="restartButton">Restart</button></div>
+      <div id="logWrap">
+        <div id="log"></div>
+      </div>
+      <div id="wrapper">
+        <div id="gameboard">
+          <div class="gameboardCell" id="0"></div>
+          <div class="gameboardCell" id="1"></div>
+          <div class="gameboardCell" id="2"></div>
+          <div class="gameboardCell" id="3"></div>
+          <div class="gameboardCell" id="4"></div>
+          <div class="gameboardCell" id="5"></div>
+          <div class="gameboardCell" id="6"></div>
+          <div class="gameboardCell" id="7"></div>
+          <div class="gameboardCell" id="8"></div>
+        </div>
+      </div>
+      <div id="buttonArea"><button id="restartButton">Restart</button></div>
     </main>
-    <footer>Footer</footer>
+    <footer>
+      <div class="footer">
+        <p>
+          Copyright ©
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+        </p>
+        <div id="githubLink">
+          <a href="https://github.com/ArtemyOsovskoi">artemy.o</a>
+          <img
+            class="githubicon"
+            src="images/gitHubTransparent.png"
+            width="32px"
+            height="32px"
+            alt="GitHub icon"
+          />
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
