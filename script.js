@@ -2,7 +2,6 @@
 const gameBoard = (() => {
   //empty array for storing player marks
   let boardArray = ["", "", "", "", "", "", "", "", ""];
-
   return { boardArray };
 })();
 
@@ -45,6 +44,7 @@ const gameFlow = (() => {
 const playRound = (() => {
     let square = document.querySelectorAll('.gameboardCell');
     let restart = document.getElementById('restartButton');
+    let logWindow = document.getElementById('log');
     //click square -> place mark -> add it to array
     Array.from(square).forEach((boardSquare) => {
         boardSquare.addEventListener('click', () => {
@@ -53,7 +53,7 @@ const playRound = (() => {
                 boardSquare.innerHTML = gameFlow.currentPlayer.mark;
                 gameBoard.boardArray[boardSquare.id] = gameFlow.currentPlayer.mark;
                 gameFlow.playerSwitcher();
-                console.log( gameFlow.currentPlayer.name,"moves next with mark", gameFlow.currentPlayer.mark);
+                logWindow.innerHTML = `${gameFlow.currentPlayer.name} moves next with mark ${gameFlow.currentPlayer.mark}`;
                 console.log(gameBoard.boardArray);                
             };
             //win condition, game ends, clear array to play again
@@ -65,10 +65,11 @@ const playRound = (() => {
                     gameBoard.boardArray[0] == "X" && gameBoard.boardArray[3] == "X" && gameBoard.boardArray[6] == "X"||
                     gameBoard.boardArray[1] == "X" && gameBoard.boardArray[4] == "X" && gameBoard.boardArray[7] == "X"||
                     gameBoard.boardArray[2] == "X" && gameBoard.boardArray[5] == "X" && gameBoard.boardArray[8] == "X") {
-                    console.log("Player X won!");
-                    alert("Player X won!");
+                    logWindow.innerHTML = "Player X has won!";
                     gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
-                    
+                    Array.from(square).forEach((boardSquare) => {
+                        boardSquare.style.pointerEvents = 'none';
+                    }); 
                     if (gameFlow.currentPlayer == gameFlow.playerO) {
                         gameFlow.playerSwitcher();
                     } 
@@ -81,9 +82,11 @@ const playRound = (() => {
                     gameBoard.boardArray[0] == "O" && gameBoard.boardArray[3] == "O" && gameBoard.boardArray[6] == "O"||
                     gameBoard.boardArray[1] == "O" && gameBoard.boardArray[4] == "O" && gameBoard.boardArray[7] == "O"||
                     gameBoard.boardArray[2] == "O" && gameBoard.boardArray[5] == "O" && gameBoard.boardArray[8] == "O") {
-                    console.log("Player O won!");
-                    alert("Player O won!");
+                    logWindow.innerHTML = "Player O has won!";
                     gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
+                    Array.from(square).forEach((boardSquare) => {
+                        boardSquare.style.pointerEvents = 'none';
+                    });
                     if (gameFlow.currentPlayer == gameFlow.playerO) {
                         gameFlow.playerSwitcher();
                     } 
@@ -93,90 +96,25 @@ const playRound = (() => {
 
     restart.addEventListener('click', ()=> {
         gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
-        Array.from(square).forEach((boardSquare) => {boardSquare.innerHTML = ""});
+        Array.from(square).forEach((boardSquare) => {
+            boardSquare.innerHTML = "";
+            boardSquare.style.pointerEvents = 'auto';
+        });
+        //start with player x
+        if (gameFlow.currentPlayer == gameFlow.playerO) {
+            gameFlow.playerSwitcher();
+        } 
+        logWindow.innerHTML = `${gameFlow.currentPlayer.name} moves next with mark ${gameFlow.currentPlayer.mark}`;
     });
 }) ();
 
 
-    /* INDEX = текущее место клика связанное с индексом массива
-    каждый из 9 индексов массива это один из квадратов на доске (массив стартует с 0):
-    0 1 2
-    3 4 5
-    6 7 8
-
-    у каждого квадрата соответствующий ID (0-8)
-    то есть индекс - это тот ID на который сделан клик
-    */
-
-
-
-/* const makeMove = (index) => {
-  //current mark to move
-  if (
-    gameFlow.currentPlayer.mark == "X" &&
-    gameBoard.boardArray[index - 1] != "O"
-  ) {
-    gameBoard.boardArray[index - 1] = "X";
-  } else if (
-    gameFlow.currentPlayer.mark == "O" &&
-    gameBoard.boardArray[index - 1] != "X"
-  ) {
-    gameBoard.boardArray[index - 1] = "O";
-  }
-
-  //if position already marked with X or O (prevent rewriting finished moves)
-  if (
-    gameBoard.boardArray[index - 1] == "X" &&
-    gameFlow.currentPlayer.mark == "O"
-  ) {
-    console.log("%cThis position is already taken!", "color: red");
-    gameFlow.playerSwitcher();
-  } else if (
-    gameBoard.boardArray[index - 1] == "O" &&
-    gameFlow.currentPlayer.mark == "X"
-  ) {
-    console.log("%cThis position is already taken!", "color: red");
-    gameFlow.playerSwitcher();
-  }
-
-  //check if there's three same marks in a row
-  const checkIfThreeX = gameFlow.threeXCheck(gameBoard.boardArray);
-  const checkIfThreeO = gameFlow.threeOCheck(gameBoard.boardArray);
-
-  //log game flow in console and switch players
-  console.log(
-    gameFlow.currentPlayer.name,
-    "moves",
-    gameFlow.currentPlayer.mark,
-    "to position",
-    index
-  );
-  console.log(gameBoard.boardArray);
-  gameFlow.playerSwitcher();
-  console.log(
-    gameFlow.currentPlayer.name,
-    "moves",
-    gameFlow.currentPlayer.mark,
-    "next"
-  );
-
-  //win condition, game ends, clear array to play again
-  if (checkIfThreeX === true) {
-    console.log("XXX won!");
-    gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
-    if (gameFlow.currentPlayer == gameFlow.playerO) {
-      gameFlow.playerSwitcher();
-    }
-  }
-  if (checkIfThreeO === true) {
-    console.log("OOO won!");
-    gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
-    if (gameFlow.currentPlayer == gameFlow.playerO) {
-      gameFlow.playerSwitcher();
-    }
-  }
-}; */
-
+/* 19.02 рабочая версия DOM, остался стайлинг и в принципе все! ура)
+Доработать:
+ - нельзя нажимать после победы другие кнопки
+по сути после объявления победы состояние доски должно быть "заморожено"
+до нажатия кнопки рестарт
+ */
 
 /* 16.02 закончил консоль версию, теперь дело за DOMом.
 Нужно взять действие клик на квадрат
@@ -187,31 +125,6 @@ const playRound = (() => {
 !!!Изменить условия победы
 !!Добавить кнопку РЕСТАРТ */
 
-
-/* 0 1 2
-     3 4 5
-     6 7 8 */
-/*   const winConditionOne = gameBoard.boardArray[1, 2, 3];
-  const winConditionTwo = gameBoard.boardArray[4, 5, 6];
-  const winConditionThree = gameBoard.boardArray[7, 8, 9];
-  const winConditionFour = gameBoard.boardArray[1, 5, 9];
-  const winConditionFive = gameBoard.boardArray[3, 5, 7];
-  const winConditionSix = gameBoard.boardArray[1, 4, 7];
-  const winConditionSeven = gameBoard.boardArray[2, 5, 8];
-  const winConditionEight = gameBoard.boardArray[3, 6, 9]; */
-//for 3x3 gameboard:
-/*   let winConditionsList = [
-    gameBoard.boardArray[0, 1, 2],
-    gameBoard.boardArray[3, 4, 5],
-    gameBoard.boardArray[6, 7, 8],
-    gameBoard.boardArray[0, 4, 8],
-    gameBoard.boardArray[2, 4, 6],
-    gameBoard.boardArray[0, 3, 6],
-    gameBoard.boardArray[1, 4, 7],
-    gameBoard.boardArray[2, 5, 8],
-  ];  */
-//for 1-9 line in console
-/* indexes: 0 1 2 3 4 5 6 7 8 */
 
 /* 16.02: и так, у меня есть массив состоящий из простых строк Х и О. Каждая строка - элемент массива,
 имеет индекс. Мне нужно определить когда ТРИ индекса, идущие друг за другом (123, 234, 345 и тд) 
