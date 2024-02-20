@@ -12,7 +12,6 @@ const gameFlow = (() => {
     return { name, mark };
   };
 
-   
   //players stored in objects made from factory
   const playerX = playersFactory(prompt("Player X choose your name", "Player X"), "X");
   const playerO = playersFactory(prompt("Player O choose your name", "Player O"), "O");
