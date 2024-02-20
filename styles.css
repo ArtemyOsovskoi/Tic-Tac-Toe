@@ -34,6 +34,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   width: 600px;
   font-family: "Cabin Sketch", sans-serif;
   font-weight: 400;
