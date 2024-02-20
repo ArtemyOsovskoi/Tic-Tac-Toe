@@ -1,6 +1,6 @@
 # Tic-Tac-Toe
 Simple tic tac toe game 
-Live: WIP
+Live: https://artemyosovskoi.github.io/Tic-Tac-Toe/
 # Overview
 This game made with purpose of practicing working with factory functions, module patterns and improve understanding of scope. 
 # Problem
